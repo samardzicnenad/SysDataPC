@@ -1,0 +1,15 @@
+1) checked out the ways to collect the data on CPU usage, network utilisation, etc... Various reviews directed me to SIGAR product which was claimed to offer the best results. http://www.hyperic.com/support/docs/sigar/overview-summary.html
+2) Went to https://support.hyperic.com/display/SIGAR/Home and checked out product documentation and then to http://sourceforge.net/projects/sigar/files/ from where I downloaded the product.
+3) Started an Eclipse Java 1.7 project DataGenerator and added SIGAR .jar file to a build path.
+4) Created a class CPUutil under the project.
+5) Used CpuPerc SIGAR class and it's methods to get CPU utilization data (percentage)
+6) Created NETutil class under the same project.
+7) Used NetStat SIGAR class and it's methods to get network utilization data
+8) Installed mySQL and created datagenerator mySQL database with cpudata and netdata tables
+9) Added mySQL .jar file to a build path.
+10) Created DataGenerator class with Tick extends TimerTask subclass which triggers CPUutil's and NETutil's methods and provides results for DBSave method which inserts this data to datagenerator database.
+11) Main method triggers TimerTask method each minute.
+
+
+
+
