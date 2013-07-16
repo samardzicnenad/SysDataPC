@@ -15,6 +15,16 @@
 				<%--<li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>--%>
 			</ul>
 		</div>
+
+		<g:form name="selectInterval" controller="NETutil" action="list">
+			<label>&nbsp;Choose the interval</label>
+			<g:select name='interval' from="${['Minute', 'Hour', 'Day']}" onchange="submit()" value="${params.interval}"/>
+		</g:form>
+		<div id="netData">
+            <img src="${createLink(controller:'NETutil', action:'returnNetData')}?interval=${params.interval}"
+              alt="network utilization chart" /> 
+        </div>
+
 		<div id="list-NETutil" class="content scaffold-list" role="main">
 			<h1><g:message code="default.list.label" args="[entityName]" /></h1>
 			<g:if test="${flash.message}">
@@ -23,33 +33,21 @@
 			<table>
 				<thead>
 					<tr>
-					
 						<g:sortableColumn property="tsTime" title="${message(code: 'NETutil.tsTime.label', default: 'Time')}" />
-					
 						<g:sortableColumn property="nInboundTCP" title="${message(code: 'NETutil.nInboundTCP.label', default: 'InboundTCP')}" />
-					
 						<g:sortableColumn property="nOutboundTCP" title="${message(code: 'NETutil.nOutboundTCP.label', default: 'OutboundTCP')}" />
-					
 						<g:sortableColumn property="nInboundAll" title="${message(code: 'NETutil.nInboundAll.label', default: 'InboundAll')}" />
-					
 						<g:sortableColumn property="nOutboundAll" title="${message(code: 'NETutil.nOutboundAll.label', default: 'OutboundAll')}" />
-					
 					</tr>
 				</thead>
 				<tbody>
 				<g:each in="${NETutilInstanceList}" status="i" var="NETutilInstance">
 					<tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-					
 						<td><g:link action="show" id="${NETutilInstance.id}">${fieldValue(bean: NETutilInstance, field: "tsTime")}</g:link></td>
-					
 						<td>${fieldValue(bean: NETutilInstance, field: "nInboundTCP")}</td>
-					
 						<td>${fieldValue(bean: NETutilInstance, field: "nOutboundTCP")}</td>
-					
 						<td>${fieldValue(bean: NETutilInstance, field: "nInboundAll")}</td>
-					
 						<td>${fieldValue(bean: NETutilInstance, field: "nOutboundAll")}</td>
-					
 					</tr>
 				</g:each>
 				</tbody>

@@ -25,16 +25,15 @@
 			
 				<g:if test="${CPUutilInstance?.tsTime}">
 				<li class="fieldcontain">
-					<span id="tsTime-label" class="property-label"><g:message code="CPUutil.tsTime.label" default="Ts Time" /></span>
+					<span id="tsTime-label" class="property-label"><g:message code="CPUutil.tsTime.label" default="Time" /></span>
 					
 						<span class="property-value" aria-labelledby="tsTime-label"><g:formatDate date="${CPUutilInstance?.tsTime}" /></span>
-					
 				</li>
 				</g:if>
 			
 				<g:if test="${CPUutilInstance?.dUser}">
 				<li class="fieldcontain">
-					<span id="dUser-label" class="property-label"><g:message code="CPUutil.dUser.label" default="DU ser" /></span>
+					<span id="dUser-label" class="property-label"><g:message code="CPUutil.dUser.label" default="User" /></span>
 					
 						<span class="property-value" aria-labelledby="dUser-label"><g:fieldValue bean="${CPUutilInstance}" field="dUser"/></span>
 					
@@ -43,7 +42,7 @@
 			
 				<g:if test="${CPUutilInstance?.dSystem}">
 				<li class="fieldcontain">
-					<span id="dSystem-label" class="property-label"><g:message code="CPUutil.dSystem.label" default="DS ystem" /></span>
+					<span id="dSystem-label" class="property-label"><g:message code="CPUutil.dSystem.label" default="System" /></span>
 					
 						<span class="property-value" aria-labelledby="dSystem-label"><g:fieldValue bean="${CPUutilInstance}" field="dSystem"/></span>
 					
@@ -52,7 +51,7 @@
 			
 				<g:if test="${CPUutilInstance?.dNice}">
 				<li class="fieldcontain">
-					<span id="dNice-label" class="property-label"><g:message code="CPUutil.dNice.label" default="DN ice" /></span>
+					<span id="dNice-label" class="property-label"><g:message code="CPUutil.dNice.label" default="Nice" /></span>
 					
 						<span class="property-value" aria-labelledby="dNice-label"><g:fieldValue bean="${CPUutilInstance}" field="dNice"/></span>
 					
@@ -61,7 +60,7 @@
 			
 				<g:if test="${CPUutilInstance?.dIdle}">
 				<li class="fieldcontain">
-					<span id="dIdle-label" class="property-label"><g:message code="CPUutil.dIdle.label" default="DI dle" /></span>
+					<span id="dIdle-label" class="property-label"><g:message code="CPUutil.dIdle.label" default="Idle" /></span>
 					
 						<span class="property-value" aria-labelledby="dIdle-label"><g:fieldValue bean="${CPUutilInstance}" field="dIdle"/></span>
 					
@@ -70,7 +69,7 @@
 			
 				<g:if test="${CPUutilInstance?.dWait}">
 				<li class="fieldcontain">
-					<span id="dWait-label" class="property-label"><g:message code="CPUutil.dWait.label" default="DW ait" /></span>
+					<span id="dWait-label" class="property-label"><g:message code="CPUutil.dWait.label" default="Wait" /></span>
 					
 						<span class="property-value" aria-labelledby="dWait-label"><g:fieldValue bean="${CPUutilInstance}" field="dWait"/></span>
 					
@@ -79,7 +78,7 @@
 			
 				<g:if test="${CPUutilInstance?.dIrq}">
 				<li class="fieldcontain">
-					<span id="dIrq-label" class="property-label"><g:message code="CPUutil.dIrq.label" default="DI rq" /></span>
+					<span id="dIrq-label" class="property-label"><g:message code="CPUutil.dIrq.label" default="Irq" /></span>
 					
 						<span class="property-value" aria-labelledby="dIrq-label"><g:fieldValue bean="${CPUutilInstance}" field="dIrq"/></span>
 					
@@ -88,7 +87,7 @@
 			
 				<g:if test="${CPUutilInstance?.dSoftIrq}">
 				<li class="fieldcontain">
-					<span id="dSoftIrq-label" class="property-label"><g:message code="CPUutil.dSoftIrq.label" default="DS oft Irq" /></span>
+					<span id="dSoftIrq-label" class="property-label"><g:message code="CPUutil.dSoftIrq.label" default="Soft Irq" /></span>
 					
 						<span class="property-value" aria-labelledby="dSoftIrq-label"><g:fieldValue bean="${CPUutilInstance}" field="dSoftIrq"/></span>
 					
@@ -97,7 +96,7 @@
 			
 				<g:if test="${CPUutilInstance?.dStolen}">
 				<li class="fieldcontain">
-					<span id="dStolen-label" class="property-label"><g:message code="CPUutil.dStolen.label" default="DS tolen" /></span>
+					<span id="dStolen-label" class="property-label"><g:message code="CPUutil.dStolen.label" default="Stolen" /></span>
 					
 						<span class="property-value" aria-labelledby="dStolen-label"><g:fieldValue bean="${CPUutilInstance}" field="dStolen"/></span>
 					
@@ -106,7 +105,7 @@
 			
 				<g:if test="${CPUutilInstance?.dCombined}">
 				<li class="fieldcontain">
-					<span id="dCombined-label" class="property-label"><g:message code="CPUutil.dCombined.label" default="DC ombined" /></span>
+					<span id="dCombined-label" class="property-label"><g:message code="CPUutil.dCombined.label" default="Combined" /></span>
 					
 						<span class="property-value" aria-labelledby="dCombined-label"><g:fieldValue bean="${CPUutilInstance}" field="dCombined"/></span>
 					
