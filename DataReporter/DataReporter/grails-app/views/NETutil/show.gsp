@@ -25,7 +25,7 @@
 			
 				<g:if test="${NETutilInstance?.tsTime}">
 				<li class="fieldcontain">
-					<span id="tsTime-label" class="property-label"><g:message code="NETutil.tsTime.label" default="Ts Time" /></span>
+					<span id="tsTime-label" class="property-label"><g:message code="NETutil.tsTime.label" default="Time" /></span>
 					
 						<span class="property-value" aria-labelledby="tsTime-label"><g:formatDate date="${NETutilInstance?.tsTime}" /></span>
 					
@@ -34,7 +34,7 @@
 			
 				<g:if test="${NETutilInstance?.nInboundTCP}">
 				<li class="fieldcontain">
-					<span id="nInboundTCP-label" class="property-label"><g:message code="NETutil.nInboundTCP.label" default="NI nbound TCP" /></span>
+					<span id="nInboundTCP-label" class="property-label"><g:message code="NETutil.nInboundTCP.label" default="Inbound TCP" /></span>
 					
 						<span class="property-value" aria-labelledby="nInboundTCP-label"><g:fieldValue bean="${NETutilInstance}" field="nInboundTCP"/></span>
 					
@@ -43,7 +43,7 @@
 			
 				<g:if test="${NETutilInstance?.nOutboundTCP}">
 				<li class="fieldcontain">
-					<span id="nOutboundTCP-label" class="property-label"><g:message code="NETutil.nOutboundTCP.label" default="NO utbound TCP" /></span>
+					<span id="nOutboundTCP-label" class="property-label"><g:message code="NETutil.nOutboundTCP.label" default="Outbound TCP" /></span>
 					
 						<span class="property-value" aria-labelledby="nOutboundTCP-label"><g:fieldValue bean="${NETutilInstance}" field="nOutboundTCP"/></span>
 					
@@ -52,7 +52,7 @@
 			
 				<g:if test="${NETutilInstance?.nInboundAll}">
 				<li class="fieldcontain">
-					<span id="nInboundAll-label" class="property-label"><g:message code="NETutil.nInboundAll.label" default="NI nbound All" /></span>
+					<span id="nInboundAll-label" class="property-label"><g:message code="NETutil.nInboundAll.label" default="Inbound All" /></span>
 					
 						<span class="property-value" aria-labelledby="nInboundAll-label"><g:fieldValue bean="${NETutilInstance}" field="nInboundAll"/></span>
 					
@@ -61,7 +61,7 @@
 			
 				<g:if test="${NETutilInstance?.nOutboundAll}">
 				<li class="fieldcontain">
-					<span id="nOutboundAll-label" class="property-label"><g:message code="NETutil.nOutboundAll.label" default="NO utbound All" /></span>
+					<span id="nOutboundAll-label" class="property-label"><g:message code="NETutil.nOutboundAll.label" default="Outbound All" /></span>
 					
 						<span class="property-value" aria-labelledby="nOutboundAll-label"><g:fieldValue bean="${NETutilInstance}" field="nOutboundAll"/></span>
 					
