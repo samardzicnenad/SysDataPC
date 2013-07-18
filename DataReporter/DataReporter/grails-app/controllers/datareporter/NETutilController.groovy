@@ -1,3 +1,16 @@
+/**********************************************************************
+ * Created by : Nenad Samardzic
+ * Date       : 07/15/2013
+ * Description: The class represents controller for network utilization data 
+ * 				The class was originally created automatically
+ * 				Later, all of the functionalities that provided any kind of control except read-only
+ * 				actions were canceled
+ * 				After that, methods 
+ * 					- for creating dataset from the DB
+ * 					- for creating a chart
+ * 					- for taking a snapshot and
+ * 					- for putting all of this together were included in the class
+ **********************************************************************/
 package datareporter
 
 import org.springframework.dao.DataIntegrityViolationException
@@ -65,7 +78,7 @@ class NETutilController {
 		def cb = encoder.encode(chart.createBufferedImage(nWidth, nHeight, BufferedImage.BITMASK, null))
 		return cb;
 	}
-
+	//creates chart with the provided dataset
 	private JFreeChart createChart(final XYDataset dataset) {
 		// create the chart...
 		final JFreeChart chart = ChartFactory.createTimeSeriesChart(
@@ -84,22 +97,19 @@ class NETutilController {
 		if (renderer instanceof StandardXYItemRenderer) {
 			final StandardXYItemRenderer rr = (StandardXYItemRenderer) renderer
 			rr.setPlotLines(true)
-			renderer.setSeriesStroke(0, new BasicStroke(2.0f))
-			renderer.setSeriesStroke(1, new BasicStroke(2.0f))
-			renderer.setSeriesStroke(2, new BasicStroke(2.0f))
-			renderer.setSeriesStroke(3, new BasicStroke(2.0f))
+			for (i in 0..3) renderer.setSeriesStroke(i, new BasicStroke(2.0f))
 		}
 		// customize date axis
 		final DateAxis axis = (DateAxis) plot.getDomainAxis();
 		axis.setDateFormatOverride(new SimpleDateFormat("YYY-MM-dd hh:mm"));
 		return chart;
 	}
-
+	//creates dataset (series) from the DB, accordingly to user-selected time interval
 	private XYDataset createDataset(String sInterval) {
 		int prevM = 0, prevH = 0, prevD = 0
 
 		def sql = Sql.newInstance("jdbc:mysql://localhost:3306/datagenerator",
-				"root", "password", "com.mysql.jdbc.Driver")
+				"username", "password", "com.mysql.jdbc.Driver")
 		def nData = sql.dataSet("netdata")
 		nData.sort { it.Time }
 
@@ -108,39 +118,16 @@ class NETutilController {
 		final TimeSeries s2 = new TimeSeries("OutboundTCP", Minute.class)
 		final TimeSeries s3 = new TimeSeries("InboundAll", Minute.class)
 		final TimeSeries s4 = new TimeSeries("OutboundAll", Minute.class)
-		nData.each{ netdata ->
-			if (sInterval == "Minute" &&
+		nData.each{ netdata -> //Graph takes the first element of the interval
+			if ((sInterval == "Minute" && //Dataset is sorted, so the one-way check is sufficient
 			(prevM != netdata.Time.minutes ||
 			(prevM == netdata.Time.minutes &&
-			(prevH != netdata.Time.hours || prevD != netdata.Time.date)))) {
-				prevM = netdata.Time.minutes
-				prevH = netdata.Time.hours
-				prevD = netdata.Time.date
-				s1.add(new Minute(netdata.Time.minutes, netdata.Time.hours,
-						netdata.Time.date, netdata.Time.month + 1, netdata.Time.year +1900), netdata.InboundTCP);
-				s2.add(new Minute(netdata.Time.minutes, netdata.Time.hours,
-						netdata.Time.date, netdata.Time.month + 1, netdata.Time.year +1900), netdata.OutboundTCP);
-				s3.add(new Minute(netdata.Time.minutes, netdata.Time.hours,
-						netdata.Time.date, netdata.Time.month + 1, netdata.Time.year +1900), netdata.InboundAll);
-				s4.add(new Minute(netdata.Time.minutes, netdata.Time.hours,
-						netdata.Time.date, netdata.Time.month + 1, netdata.Time.year +1900), netdata.OutboundAll);
-			}
-			else if (sInterval == "Hour" &&
+			(prevH != netdata.Time.hours || prevD != netdata.Time.date)))) ||
+			(sInterval == "Hour" &&
 			(prevH != netdata.Time.hours ||
-			(prevH == netdata.Time.hours && prevD != netdata.Time.date))) {
-				prevM = netdata.Time.minutes
-				prevH = netdata.Time.hours
-				prevD = netdata.Time.date
-				s1.add(new Minute(netdata.Time.minutes, netdata.Time.hours,
-						netdata.Time.date, netdata.Time.month + 1, netdata.Time.year +1900), netdata.InboundTCP);
-				s2.add(new Minute(netdata.Time.minutes, netdata.Time.hours,
-						netdata.Time.date, netdata.Time.month + 1, netdata.Time.year +1900), netdata.OutboundTCP);
-				s3.add(new Minute(netdata.Time.minutes, netdata.Time.hours,
-						netdata.Time.date, netdata.Time.month + 1, netdata.Time.year +1900), netdata.InboundAll);
-				s4.add(new Minute(netdata.Time.minutes, netdata.Time.hours,
-						netdata.Time.date, netdata.Time.month + 1, netdata.Time.year +1900), netdata.OutboundAll);
-			}
-			else if (sInterval == "Day" && prevD != netdata.Time.date) {
+			(prevH == netdata.Time.hours && prevD != netdata.Time.date))) ||
+			(sInterval == "Day" && prevD != netdata.Time.date))
+			{
 				prevM = netdata.Time.minutes
 				prevH = netdata.Time.hours
 				prevD = netdata.Time.date
@@ -165,7 +152,7 @@ class NETutilController {
 		def chart = createChart(createDataset(sInterval))
 		return getChartAsImage(chart, 800, 600)
 	}
-
+	//initially set the graph to minutes
 	def returnNetData = {
 		def sInterval = params.interval ? params.interval : "Minute"
 		def imgChartImage = drawChartImage(sInterval)

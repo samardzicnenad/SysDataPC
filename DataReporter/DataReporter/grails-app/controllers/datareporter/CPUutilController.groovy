@@ -1,3 +1,16 @@
+/**********************************************************************
+ * Created by : Nenad Samardzic
+ * Date       : 07/15/2013
+ * Description: The class represents controller for CPU utilization data
+ * 				The class was originally created automatically
+ * 				Later, all of the functionalities that provided any kind of control except read-only
+ * 				actions were canceled
+ * 				After that, methods 
+ * 					- for creating dataset from the DB
+ * 					- for creating a chart
+ * 					- for taking a snapshot and
+ * 					- for putting all of this together were included in the class
+ **********************************************************************/
 package datareporter
 
 import org.springframework.dao.DataIntegrityViolationException
@@ -53,7 +66,7 @@ class CPUutilController {
 
 		[CPUutilInstance: CPUutilInstance]
 	}
-
+	
 	public static byte[] getChartAsImage(JFreeChart chart, int nWidth, int nHeight)
 	{
 		if(nWidth < 0 || nHeight < 0) //validate dimensions
@@ -64,11 +77,11 @@ class CPUutilController {
 		def cb = encoder.encode(chart.createBufferedImage(nWidth, nHeight, BufferedImage.BITMASK, null))
 		return cb;
 	}
-
+	//creates chart with the provided dataset
 	private JFreeChart createChart(final XYDataset dataset) {
 		// create the chart...
 		final JFreeChart chart = ChartFactory.createTimeSeriesChart(
-				"CPU utilization chart", "Time", "out of 100",	dataset, true, true, false)
+				"CPU utilization chart", "Time", "Projected on a scale of 1", dataset, true, true, false)
 		//customize it
 		chart.setBackgroundPaint(Color.white)
 		final XYPlot plot = chart.getXYPlot()
@@ -83,22 +96,14 @@ class CPUutilController {
 		if (renderer instanceof StandardXYItemRenderer) {
 			final StandardXYItemRenderer rr = (StandardXYItemRenderer) renderer
 			rr.setPlotLines(true)
-			renderer.setSeriesStroke(0, new BasicStroke(2.0f))
-			renderer.setSeriesStroke(1, new BasicStroke(2.0f))
-			renderer.setSeriesStroke(2, new BasicStroke(2.0f))
-			renderer.setSeriesStroke(3, new BasicStroke(2.0f))
-			renderer.setSeriesStroke(4, new BasicStroke(2.0f))
-			renderer.setSeriesStroke(5, new BasicStroke(2.0f))
-			renderer.setSeriesStroke(6, new BasicStroke(2.0f))
-			renderer.setSeriesStroke(7, new BasicStroke(2.0f))
-			renderer.setSeriesStroke(8, new BasicStroke(2.0f))
+			for (i in 0..8) renderer.setSeriesStroke(i, new BasicStroke(2.0f))
 		}
 		// customize date axis
 		final DateAxis axis = (DateAxis) plot.getDomainAxis();
 		axis.setDateFormatOverride(new SimpleDateFormat("YYY-MM-dd hh:mm"));
 		return chart;
 	}
-
+	//creates dataset (series) from the DB, accordingly to user-selected time interval
 	private XYDataset createDataset(String sInterval) {
 		int prevM = 0, prevH = 0, prevD = 0
 
@@ -117,59 +122,15 @@ class CPUutilController {
 		final TimeSeries s7 = new TimeSeries("SoftIrq", Minute.class)
 		final TimeSeries s8 = new TimeSeries("Stolen", Minute.class)
 		final TimeSeries s9 = new TimeSeries("Combined", Minute.class)
-		cData.each{ cpudata ->
-			if (sInterval == "Minute" &&
+		cData.each{ cpudata -> //Graph takes only the first element of the interval
+			if ((sInterval == "Minute" && //Dataset is sorted, so the one-way check is sufficient
 			(prevM != cpudata.Time.minutes ||
 			(prevM == cpudata.Time.minutes &&
-			(prevH != cpudata.Time.hours || prevD != cpudata.Time.date)))) {
-				prevM = cpudata.Time.minutes
-				prevH = cpudata.Time.hours
-				prevD = cpudata.Time.date
-				s1.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.User);
-				s2.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.System);
-				s3.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.Nice);
-				s4.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.Idle);
-				s5.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.Wait);
-				s6.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.Irq);
-				s7.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.SoftIrq);
-				s8.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.Stolen);
-				s9.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.Combined);
-			}
-			else if (sInterval == "Hour" &&
+			(prevH != cpudata.Time.hours || prevD != cpudata.Time.date)))) ||
+			(sInterval == "Hour" &&
 			(prevH != cpudata.Time.hours ||
-			(prevH == cpudata.Time.hours && prevD != cpudata.Time.date))) {
-				prevM = cpudata.Time.minutes
-				prevH = cpudata.Time.hours
-				prevD = cpudata.Time.date
-				s1.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.User);
-				s2.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.System);
-				s3.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.Nice);
-				s4.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.Idle);
-				s5.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.Wait);
-				s6.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.Irq);
-				s7.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.SoftIrq);
-				s8.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.Stolen);
-				s9.add(new Minute(cpudata.Time.minutes, cpudata.Time.hours,
-						cpudata.Time.date, cpudata.Time.month + 1, cpudata.Time.year +1900), cpudata.Combined);
-			}
-			else if (sInterval == "Day" && prevD != cpudata.Time.date) {
+			(prevH == cpudata.Time.hours && prevD != cpudata.Time.date))) ||
+			(sInterval == "Day" && prevD != cpudata.Time.date)) {
 				prevM = cpudata.Time.minutes
 				prevH = cpudata.Time.hours
 				prevD = cpudata.Time.date
@@ -209,7 +170,7 @@ class CPUutilController {
 		def chart = createChart(createDataset(sInterval))
 		return getChartAsImage(chart, 800, 600)
 	}
-
+	//initially set the graph to minutes
 	def returnCPUData = {
 		def sInterval = params.interval ? params.interval : "Minute"
 		def imgChartImage = drawChartImage(sInterval)

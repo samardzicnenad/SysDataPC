@@ -1,3 +1,10 @@
+<%--
+/**********************************************************************
+ * Created by : mostly automatically with some modifications by Nenad Samardzic
+ * Date       : 07/15/2013
+ * Description: Index page for the application
+ **********************************************************************/
+ --%>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -84,14 +91,19 @@
 		<a href="#page-body" class="skip"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
 		<div id="page-body" role="main">
 			<h1>Data Reporter</h1>
-			<p>This application presents data that was collected by a separate Java console application.</p>
+			<p>This application presents data that was collected using a separate Java console application.</p>
 			<p>It comprises of CPU and network utilization data:</p>
 			<div id="controller-list" role="navigation">
-				<h2>Choose the table:</h2>
+				<h2>Choose the data:</h2>
 				<ul>
 					<g:each var="c" in="${grailsApplication.controllerClasses.sort { it.fullName } }">
 						<g:if test="${c.fullName != 'grails.plugin.databasemigration.DbdocController'}">
-							<li class="controller"><g:link controller="${c.logicalPropertyName}">${c.fullName}</g:link></li>
+							<g:if test="${c.fullName == 'datareporter.CPUutilController'}">
+								<li class="controller"><g:link controller="${c.logicalPropertyName}">CPU utilization</g:link></li>
+							</g:if>
+							<g:if test="${c.fullName == 'datareporter.NETutilController'}">
+								<li class="controller"><g:link controller="${c.logicalPropertyName}">Network utilization</g:link></li>
+							</g:if>
 						</g:if>
 					</g:each>
 				</ul>

@@ -1,4 +1,15 @@
-
+<%--
+/**********************************************************************
+ * Created by : mostly automatically with some modifications by Nenad Samardzic
+ * Date       : 07/15/2013
+ * Description: The class represents view for CPU utilization data
+ *				The original list.gsp was altered in sense that:
+ *					- all of non-read-only actions were disabled
+ *					- chart view was added
+ * 					- select tag was added
+ *					- parameters were passed to the controller class
+ **********************************************************************/
+ --%>
 <%@ page import="datareporter.CPUutil" %>
 <!DOCTYPE html>
 <html>
