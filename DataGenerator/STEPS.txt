@@ -10,6 +10,8 @@
 10) Created DataGenerator class with Tick extends TimerTask subclass which triggers CPUutil's and NETutil's methods and provides results for DBSave method which inserts this data to datagenerator database.
 11) Main method triggers TimerTask method each minute.
 
+***later added***
 
-
-
+12) Added possibility to choose time interval
+13) replaced timer with executor
+14) Changed error handling
