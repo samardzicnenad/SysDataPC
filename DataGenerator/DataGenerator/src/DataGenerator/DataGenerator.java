@@ -1,26 +1,47 @@
+/**********************************************************************
+ * Created by : Nenad Samardzic
+ * Date       : 07/10/2013
+ * Description: The class represents tool for saving generated system's utilization data (CPU and NET)
+ * Idea       : Data Generator takes 3 user-provided values:
+ *              - database user name
+ *              - database password
+ *                  - makes deposit or withdrawal
+ *                  - checks balance
+ *                  - interval (in seconds)
+ *              The first two provide access to the database in which the collected data is stored
+ *              The third one represents the interval for data collection/generation
+ *              It uses:
+ *              	CPUutil - class for generating CPU utilization data and
+ *              	NETutil - class for generating network utilization data
+ **********************************************************************/
 package DataGenerator;
 
 import java.sql.*;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import javax.swing.JOptionPane; 
 
+import org.hyperic.sigar.SigarException;
+
 public class DataGenerator {
-	static Timer myTimer;
 	static String sUsername, sPassword;
-	
+
+	//Saves collected data to the DataGenerator DB
 	private void DBSave(double[] CPUInfo, int[] NETInfo) {
 		Connection myConn = null;
 		PreparedStatement statement;
 		String sSQL;
-		
+
 		try {
+			//create connection
 			Class.forName("com.mysql.jdbc.Driver");
 			myConn = DriverManager.getConnection("jdbc:mysql://localhost/datagenerator", sUsername, sPassword);
-			
+			//make a time-stamp
 			Timestamp date = new Timestamp(new Date().getTime());
-			
+			//prepare SQL statements and execute them
 			sSQL = "INSERT INTO cpudata (Time, User, System, Nice, Idle, Wait, Irq, SoftIrq, Stolen, Combined) VALUES" + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			statement = myConn.prepareStatement(sSQL);
 			statement.setTimestamp(1, date);
@@ -54,21 +75,39 @@ public class DataGenerator {
 			}
 		}
 	}
-	
-	public static void main(String[] args) {
-		sUsername= JOptionPane.showInputDialog("Please provide database username: ");
-		sPassword= JOptionPane.showInputDialog("Please provide database password: ");
-		DataGenerator myDG = new DataGenerator();
-		myTimer = new Timer();
-		myTimer.schedule(myDG.new Tick(), 0, 60000);
-	}
-	
-    class Tick extends TimerTask {
+
+	//makes one "tick" - collects the data for CPU and NET and saves it to a DB
+	private class Tick implements Runnable {
 		CPUutil myCPUU = new CPUutil();
 		NETutil myNETU = new NETutil();
-        @Override
-        public void run() {
-        	DBSave(myCPUU.getCPUInfo(), myNETU.getNETInfo());
-        }
-    }
+	    @Override
+	    public void run() {
+	    	try {
+				DBSave(myCPUU.getCPUInfo(), myNETU.getNETInfo());
+			} catch (SigarException sEx) {
+				sEx.printStackTrace();
+			}
+	    }
+	}
+
+	public static void main(String[] args) {
+		int nInterval = 0; //data collecting interval
+		boolean secsOK = false; //flag for interval input format
+		String sMessage = "Please provide interval for collecting the data (in secs): ";
+		//just to avoid hard-coding of user and password
+		sUsername= JOptionPane.showInputDialog("Please provide database username: ");
+		sPassword= JOptionPane.showInputDialog("Please provide database password: ");
+		while (!secsOK){
+			try {
+				nInterval= Integer.parseInt(JOptionPane.showInputDialog(sMessage));
+				secsOK = true;
+			}
+			catch (Exception ex) {
+				sMessage = "Irregular value for interval!\nPlease provide interval for collecting the data (in secs): ";
+			}
+		}
+		DataGenerator myDG = new DataGenerator();
+		ScheduledExecutorService mySES = Executors.newScheduledThreadPool(1);
+		mySES.scheduleAtFixedRate(myDG.new Tick(), 0, nInterval*1000, TimeUnit.MILLISECONDS);
+	}
 }

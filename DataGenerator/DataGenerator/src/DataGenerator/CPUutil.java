@@ -1,3 +1,14 @@
+/**********************************************************************
+ * Created by : Nenad Samardzic
+ * Date       : 07/10/2013
+ * Description: The class represents generator of CPU utilization data
+ * Idea       : CPUutil uses an external library - sigar.jar which provides access
+ * 				to the numerous system's information
+ * 				Here are collected and returned the following percentages:
+ * 					- system and user times
+ * 					- wait and idle times
+ * 					- interrupt request times etc.
+ **********************************************************************/
 package DataGenerator;
 
 import org.hyperic.sigar.Sigar;
@@ -7,8 +18,7 @@ import org.hyperic.sigar.CpuPerc;
 public class CPUutil {
 	private Sigar mySigar = new Sigar();
 	
-	double[] getCPUInfo() {
-		//private void getCPUInfo() {
+	double[] getCPUInfo() throws SigarException {
 		double dUser = 0, dSystem = 0, dNice = 0, dIdle = 0, dWait = 0, dIrq = 0, dSoftIrq = 0, dStolen = 0, dCombined = 0;
 
 		try {
@@ -21,27 +31,10 @@ public class CPUutil {
 			dIrq = myCpuPerc.getIrq();
 			dSoftIrq = myCpuPerc.getSoftIrq();
 			dStolen = myCpuPerc.getStolen();
-			dCombined = myCpuPerc.getCombined();
+			dCombined = myCpuPerc.getCombined(); //User + Sys + Nice + Wait
 		} catch (SigarException sEx) {
-			sEx.printStackTrace();
+			throw sEx;
 		}
-		/*
-		System.out.println("System CPU user: " + dUser + "%");
-		System.out.println("System CPU kernel: " + dSystem + "%");
-		System.out.println("System CPU nice: " + dNice + "%");
-		System.out.println("System CPU idle: " + dIdle + "%");
-		System.out.println("System CPU io wait: " + dWait + "%");
-		System.out.println("System CPU servicing interrupts: " + dIrq + "%");
-		System.out.println("System CPU servicing soft irqs: " + dSoftIrq + "%");
-		System.out.println("System CPU involuntary wait: " + dStolen + "%");
-		System.out.println("System CPU User + Sys + Nice + Wait: " + dCombined + "%");
-		*/
 		return new double[] {dUser, dSystem, dNice, dIdle, dWait, dIrq, dSoftIrq, dStolen, dCombined};
 	}
-	/*
-	public static void main(String[] args) {
-		CPUutil myCPUU = new CPUutil();
-		myCPUU.getCPUInfo();
-	}
-	*/
 }
