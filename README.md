@@ -22,39 +22,7 @@ DATA LAYER:
  - create table netdata
 
 
-You can run this one script:
-
-delimiter ;
-CREATE DATABASE `datagenerator` /*!40100 DEFAULT CHARACTER SET utf8 */;
-
-USE `datagenerator`;
-
-CREATE TABLE `cpudata` (
-  `idCPUData` int(11) NOT NULL AUTO_INCREMENT,
-  `Time` timestamp NULL DEFAULT NULL,
-  `User` double DEFAULT NULL,
-  `System` double DEFAULT NULL,
-  `Nice` double DEFAULT NULL,
-  `Idle` double DEFAULT NULL,
-  `Wait` double DEFAULT NULL,
-  `Irq` double DEFAULT NULL,
-  `SoftIrq` double DEFAULT NULL,
-  `Stolen` double DEFAULT NULL,
-  `Combined` double DEFAULT NULL,
-  PRIMARY KEY (`idCPUData`),
-  UNIQUE KEY `idCPUData_UNIQUE` (`idCPUData`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
-CREATE TABLE `netdata` (
-  `idNETData` int(11) NOT NULL AUTO_INCREMENT,
-  `Time` datetime DEFAULT NULL,
-  `InboundTCP` int(11) DEFAULT NULL,
-  `OutboundTCP` int(11) DEFAULT NULL,
-  `InboundAll` int(11) DEFAULT NULL,
-  `OutboundAll` int(11) DEFAULT NULL,
-  PRIMARY KEY (`idNETData`),
-  UNIQUE KEY `idNETData_UNIQUE` (`idNETData`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+You can run the provided script
 
 
 
