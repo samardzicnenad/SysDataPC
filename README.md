@@ -25,6 +25,8 @@ DATA LAYER:
 You can run the provided script
 
 
+note: download both applications with a single clone command to a desired location: git clone https://github.com/samardzicnenad/SysDataPC
+
 
 DATA GENERATOR APPLICATION:
 ***************************
